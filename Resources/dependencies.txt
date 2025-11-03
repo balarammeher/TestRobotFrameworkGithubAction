@@ -6,4 +6,4 @@ webdriver-manager
 robotframework-pabot==4.3.2
 browserstack-local
 selenium
-browserstack-sdk
+browserstack-sdk==1.31.4
