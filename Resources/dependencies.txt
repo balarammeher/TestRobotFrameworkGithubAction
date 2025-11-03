@@ -1,9 +1,8 @@
 setuptools
-wheel
 robotframework
 robotframework-seleniumlibrary
 webdriver-manager
 robotframework-pabot==4.3.2
 browserstack-local
 selenium
-browserstack-sdk==1.31.4
+browserstack-sdk
