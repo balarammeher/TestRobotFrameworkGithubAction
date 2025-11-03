@@ -1,0 +1,56 @@
+name: Automatic Run Robot Framework Tests on BrowserStack
+
+on: 
+  push:
+    branches:
+      - main
+defaults:
+  run:
+    working-directory: .
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      
+      - name: Install libxml2-utils
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+      - name: Run xmllint command
+        run: xmllint --version  
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r Resources/dependencies.txt
+          
+      - name: Run Robot Framework tests on BrowserStack
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        run: |
+          browserstack-sdk robot Tests/Login_Test.robot --browserstackConfigFile browserstack.yml
+      
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-reports
+          path: ${{ github.workspace }}  
+
+      - name: Summarize Robot Results
+        run: |
+          passed=$(xmllint --xpath "string(count(//test/status[@status='PASS']))" output.xml)
+          failed=$(xmllint --xpath "string(count(//test/status[@status='FAIL']))" output.xml)
+          total=$((passed + failed))
+
+          echo "Robot Framework Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Total Executed: $total" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Passed: $passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Failed: $failed" >> $GITHUB_STEP_SUMMARY               
+      
