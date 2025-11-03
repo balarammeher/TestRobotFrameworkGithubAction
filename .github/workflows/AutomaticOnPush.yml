@@ -28,6 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install --no-cache-dir --force-reinstall grpcio
           pip install -r Resources/dependencies.txt
           
       - name: Run Robot Framework tests on BrowserStack
