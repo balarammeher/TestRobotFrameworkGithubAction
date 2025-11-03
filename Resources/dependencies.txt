@@ -1,4 +1,5 @@
-setuptools
+setuptools 
+wheel                                              
 robotframework
 robotframework-seleniumlibrary
 webdriver-manager
